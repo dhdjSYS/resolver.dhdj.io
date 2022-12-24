@@ -4,7 +4,7 @@
 
 [`dhdj_roll_resolver_v2.lua`](dhdj_roll_resolver_v2.lua)
 
-默认服务器为dhdj的公益服务器，人多了可能会死机
+默认服务器为dhdj的中国服务器，人多了可能会死机
 
 ### 免费服务器列表
 
