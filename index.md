@@ -40,3 +40,7 @@
 2. BALTHASAR_2 (Freestanding) 根据敌人的位置决定roll角度
 3. CASPER_3 (Desync) 根据sk解析到的敌人desync角度来决定roll角度以及限制最大roll角度
 4. majority_vote() 最终角度 = 多数赞成的角度
+
+### 好用吗
+
+爱用不用
