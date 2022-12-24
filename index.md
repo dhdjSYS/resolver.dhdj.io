@@ -48,3 +48,17 @@
 ### 源码发我
 
 不发
+
+### 如何编写我自己的`animstate`/`animlayer`解析服务器
+begin with something like this:
+```python
+async def resolve_handle_request(websocket, path):
+    while True:
+        data = await websocket.recv()
+        data = json.loads(data)
+        # implement the protocol
+        # implement your resolve logic
+        msg_arr = {"tick":data['tick'], "0": 0}
+        # return the roll angles for each player and current tick count
+        await websocket.send(json.dumps(msg))
+```
