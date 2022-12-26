@@ -5,6 +5,7 @@
 [`dhdj_roll_resolver_v2.lua`](dhdj_roll_resolver_v2.lua)
 
 默认服务器为cf代理服务器，比较卡但相对稳定
+
 12/27更新: 所有免费服务器均已完成大脑升级，可多承载五倍的人数
 
 ### 免费服务器列表
