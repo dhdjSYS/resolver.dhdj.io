@@ -51,7 +51,7 @@ vtable_thunk = function(i, ct)
   end
 end
 nativeGetClientEntity = vtable_bind('client.dll', 'VClientEntityList003', 3, 'player*(__thiscall*)(void*, int)')
-HOST_ADDR = "ws://43.138.147.94:1741"
+HOST_ADDR = "ws://ws.resolver.dhdj.io:8080"
 MAX_CYCLE = 16
 server = nil
 connecting = true
