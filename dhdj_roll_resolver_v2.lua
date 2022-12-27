@@ -1,4 +1,4 @@
-local entity, base64, http, websockets, inspect, vector, ffi, cast, typeof, new, __thiscall, table_copy, vtable_bind, interface_ptr, vtable_entry, vtable_thunk, nativeGetClientEntity, HOST_ADDR, MAX_CYCLE, server, connecting, packet_sent, last_sent_tick, last_received_msg, last_received_tick, last_tick_delay, connected, congested, nl_resolve_ref, fs_resolve_ref, log, clamp, angleNormalize, handleMessage, connectToServer, ws_callbacks, MAGI, MELCHIOR_1, BALTHASAR_2, CASPER_3, player_eye_angles, player_override, resolve_neverlose_roll, majority_vote, player_roll, on_net_update_start, on_net_update_end, on_paint, aim_miss
+local entity, base64, http, websockets, inspect, vector, ffi, cast, typeof, new, __thiscall, table_copy, vtable_bind, interface_ptr, vtable_entry, vtable_thunk, nativeGetClientEntity, HOST_ADDR, MAX_CYCLE, server, connecting, packet_sent, last_sent_tick, last_received_msg, last_received_tick, last_tick_delay, connected, congested, nl_resolve_ref, fs_resolve_ref, log, clamp, angleNormalize, handleMessage, connectToServer, ws_callbacks, MAGI, MELCHIOR_1, BALTHASAR_2, CASPER_3, player_eye_angles, player_override, resolve_neverlose_roll, majority_vote, player_roll, on_net_update_start, on_net_update_end, on_paint, aim_miss, reset_congested
 entity = require("gamesense/entity")
 base64 = require("gamesense/base64")
 http = require("gamesense/http")
@@ -396,7 +396,7 @@ do
       self.update_tick[index] = globals.tickcount()
       if ui.get(fs_resolve_ref) then
         local velocity = anim.clamped_velocity
-        if velocity < 0.3 and not out_of_range then
+        if velocity < 0.1 and not out_of_range then
           plist.set(index, "Force body yaw value", (self.angles[index] > 0 and -60 or 60) * (BALTHASAR_2.invert[index] and -1 or 1))
           return plist.set(index, "Force body yaw", true)
         else
@@ -519,7 +519,7 @@ resolve_neverlose_roll = function()
     if player_eye_angles[index] ~= nil then
       local angDifference = CASPER_3:normalize(cur_eye_angles - player_eye_angles[index])
       if math.abs(angDifference) > 60 then
-        plist.set(index, "Force body yaw value", angDifference > 0 and -60 or 60)
+        plist.set(index, "Force body yaw value", angDifference > 0 and 60 or -60)
         player_override[index] = 32
       end
     end
@@ -572,11 +572,12 @@ on_net_update_start = function()
   local enemies = entity.get_players(true)
   for i, enemy in ipairs(enemies) do
     local index = enemy:get_entindex()
+    local anim = enemy:get_anim_state()
     local ent_ptr = nativeGetClientEntity(index)
     player_roll[index] = {
       majority_vote(MELCHIOR_1:get(index), BALTHASAR_2:get(index), CASPER_3:get(index))
     }
-    player_roll[index][1] = player_roll[index][1] * (math.max(0, math.abs(CASPER_3:get_desync_exact(enemy)) - 20) / 36)
+    player_roll[index][1] = anim.clamped_velocity < 0.8 and player_roll[index][1] * (math.max(0, math.abs(CASPER_3:get_desync_exact(enemy)) - 20) / 36) or 0
     ent_ptr.roll = player_roll[index][1]
   end
 end
@@ -630,4 +631,9 @@ aim_miss = function(e)
     end
   end
 end
-return client.set_event_callback('aim_miss', aim_miss)
+client.set_event_callback('aim_miss', aim_miss)
+reset_congested = function()
+  packet_sent = 0
+  return client.delay_call(1, reset_congested)
+end
+return client.delay_call(1, reset_congested)
